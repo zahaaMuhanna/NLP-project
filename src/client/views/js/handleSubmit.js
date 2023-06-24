@@ -1,8 +1,18 @@
 import axios from "axios";
 
+const { isValidUrl } = require("./checkURL");
+
+
 const handleSubmit = async (e) => {
     e.preventDefault()
     const form = document.querySelector("form")
+    const input = document.getElementById("URI")
+    if (!isValidUrl(input.value)) {
+        document.getElementById("error").style.display = "block";
+        document.getElementById("error").innerHTML = "Please, Enter a valid URL";
+        return;
+    }
+    loading(true)
     const { data } = await axios.post(
         'http://localhost:8000/',
         form,
@@ -18,14 +28,15 @@ const handleSubmit = async (e) => {
 }
 
 const show_result = data => {
+    loading(false)
     if (data.msg) {
         document.getElementById("error").style.display = "block";
         document.querySelectorAll("ul li").forEach(element => {
             element.style.display = "none"
         })
         document.getElementById("error").innerHTML = `${data.msg}`;
-        
-        return ;
+
+        return;
     }
     document.getElementById("error").style.display = "none";
     document.querySelectorAll("ul li").forEach(element => {
@@ -38,7 +49,19 @@ const show_result = data => {
     document.getElementById("score_tag").innerHTML = `Score Tag: ${data.sample.score_tag}`;
 }
 
+
+const loading = (bool) => {
+    // loader
+    const loader = document.getElementById('loader');
+    //
+    if (bool) {
+        // Show the loader
+        loader.style.display = 'block';
+        return ;
+    }
+    //hide the loader
+    loader.style.display = 'none';
+
+}
+
 export { handleSubmit }
-
-
-

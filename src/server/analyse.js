@@ -15,17 +15,7 @@ analyze = async (url, key) => {
                 const error = handleError(code, response.data.status.msg)
                 return error
             }
-            // handle success
-            const { score_tag, agreement, subjectivity, confidence, irony } = response.data
-            let sample = {
-                score_tag: score_tag,
-                agreement: agreement,
-                subjectivity: subjectivity,
-                confidence: confidence,
-                irony: irony
-            }
-            result = { sample, status: response.status }
-            return result
+            return successResponse(response.data, code)
         })
     return analysis
 }
@@ -36,6 +26,20 @@ const handleError = (code, msg) => {
         msg: msg
     }
     return error
+}
+
+//cure the data and send it to the client
+const successResponse = (data, code) =>{
+    const { score_tag, agreement, subjectivity, confidence, irony } = data
+            let sample = {
+                score_tag: score_tag,
+                agreement: agreement,
+                subjectivity: subjectivity,
+                confidence: confidence,
+                irony: irony
+            }
+            result = { sample, status: code }
+            return result
 }
 
 module.exports = {
