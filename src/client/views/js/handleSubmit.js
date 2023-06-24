@@ -3,29 +3,32 @@ import axios from "axios";
 //calling the isValidUrl function to use after sumission
 const { isValidUrl } = require("./checkURL");
 
-const input = document.getElementById("URI")
+const input = document.getElementById("URI");
 
 //handle input change
-input.addEventListener("change", (e)=>{
-    e.preventDefault()
-    hide_error()
-    show_results(false)
-})
+document.addEventListener('DOMContentLoaded', function () {
+    input.addEventListener("change", (e)=>{
+        e.preventDefault()
+        hide_error()
+        show_results(false)
+    })
+}
+)
 
 
 // handle the submit
-const handleSubmit = async (e) => {
-    e.preventDefault()
-    
-    const form = document.querySelector("form")
-    
+async function handleSubmit(e) {
+    e.preventDefault();
+
+    const form = document.querySelector("form");
+
     if (!isValidUrl(input.value)) {
-        show_error()
+        show_error();
         document.getElementById("error").innerHTML = "Please, Enter a valid URL";
-        input.value = ""
+        input.value = "";
         return;
     }
-    loading(true)
+    loading(true);
     const { data } = await axios.post(
         'http://localhost:8000/',
         form,
@@ -34,9 +37,9 @@ const handleSubmit = async (e) => {
                 'Content-Type': 'application/json'
             }
         }
-    )
-    input.value = ""
-    display_results(data)
+    );
+    input.value = "";
+    display_results(data);
 }
 
 //showing the data on the ui
