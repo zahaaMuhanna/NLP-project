@@ -1,15 +1,28 @@
 import axios from "axios";
 
+//calling the isValidUrl function to use after sumission
 const { isValidUrl } = require("./checkURL");
 
+const input = document.getElementById("URI")
 
+//handle input change
+input.addEventListener("change", (e)=>{
+    e.preventDefault()
+    hide_error()
+    show_results(false)
+})
+
+
+// handle the submit
 const handleSubmit = async (e) => {
     e.preventDefault()
+    
     const form = document.querySelector("form")
-    const input = document.getElementById("URI")
+    
     if (!isValidUrl(input.value)) {
-        document.getElementById("error").style.display = "block";
+        show_error()
         document.getElementById("error").innerHTML = "Please, Enter a valid URL";
+        input.value = ""
         return;
     }
     loading(true)
@@ -22,26 +35,24 @@ const handleSubmit = async (e) => {
             }
         }
     )
-
-    show_result(data)
-
+    input.value = ""
+    display_results(data)
 }
 
-const show_result = data => {
+//showing the data on the ui
+const display_results = data => {
+
     loading(false)
     if (data.msg) {
-        document.getElementById("error").style.display = "block";
-        document.querySelectorAll("ul li").forEach(element => {
-            element.style.display = "none"
-        })
+        show_error()
+        show_results(false)
         document.getElementById("error").innerHTML = `${data.msg}`;
 
         return;
     }
-    document.getElementById("error").style.display = "none";
-    document.querySelectorAll("ul li").forEach(element => {
-        element.style.display = "block"
-    })
+    hide_error()
+    show_results(true)
+
     document.getElementById("agreement").innerHTML = `Agreement: ${data.sample.agreement}`;
     document.getElementById("subjectivity").innerHTML = `Subjectivity: ${data.sample.subjectivity}`;
     document.getElementById("confidence").innerHTML = `Confidence: ${data.sample.confidence}`;
@@ -57,11 +68,27 @@ const loading = (bool) => {
     if (bool) {
         // Show the loader
         loader.style.display = 'block';
-        return ;
+        return;
     }
     //hide the loader
     loader.style.display = 'none';
 
 }
+
+const show_results = (bool) => {
+    if (bool) {
+        document.querySelectorAll("ul li").forEach(element => {
+            element.style.display = "block"
+        })
+        return;
+    }
+    document.querySelectorAll("ul li").forEach(element => {
+        element.style.display = "none"
+    })
+    return;
+}
+
+const show_error = () => document.getElementById("error").style.display = "block";
+const hide_error = () => document.getElementById("error").style.display = "none";
 
 export { handleSubmit }
