@@ -38,7 +38,6 @@ async function handleSubmit(e) {
             }
         }
     );
-    input.value = "";
     display_results(data);
 }
 
